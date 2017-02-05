@@ -1,0 +1,66 @@
+package com.example.nelson.fuzzz;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+/**
+ * Created by nelson on 04-Feb-17.
+ */
+public class DatabaseHelper extends SQLiteOpenHelper {
+
+    public static final String Database = "Fuzzkey_db";
+    public static final String user_table = "reg_info";
+    public static final String col_10 = "Sr_no";
+
+    public static final String col_11 = "UID";
+    public static final String col_12 = "Email_ID";
+    public static final String col_13 = "Password";
+
+//, String name, SQLiteDatabase.CursorFactory factory, int version
+    public DatabaseHelper(Context context) {
+
+
+        super(context,Database, null, 1);
+        //this code is to check if db was creatd or not
+        //SQLiteDatabase db=this.getWritableDatabase();
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
+        db.execSQL("create table "+user_table+"(" +col_10+ " INTEGER PRIMARY KEY AUTOINCREMENT, "+col_11+" TEXT, "+col_12+" TEXT,"+col_13+" TEXT)" );
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        db.execSQL("DROP TABLE IF EXISTS "+ user_table);
+        onCreate(db);
+
+    }
+
+    public boolean insertData(String uid, String emailid, String password) {
+
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(col_11,uid);
+        cv.put(col_12,emailid);
+        cv.put(col_13,password);
+        long result=db.insert( user_table,null,cv);
+        if(result==-1)
+        {return false;}
+else
+        return true;
+    }
+
+    public Cursor getData(String userid, String password){
+        SQLiteDatabase db=this.getWritableDatabase();
+Cursor result=db.rawQuery("select * from "+user_table+" where UID='"+userid+"' and Password='"+password+"'",null);
+        return result;
+
+    }
+}
